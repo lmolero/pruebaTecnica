@@ -33,8 +33,6 @@ Esta es una aplicación web desarrollada en PHP y MySQL para gestionar citas onl
 - JavaScript (validación o alertas)
 - XAMPP (como entorno local)
 
----
-
 ## 🚀 Funcionalidades
 
 - 📋 Agendar Cita
