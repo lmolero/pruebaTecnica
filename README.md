@@ -24,7 +24,6 @@ Decodificación de los datos de un archivo csv para descifrar valores con PHP. M
 Ejercicio 2: 
 Esta es una aplicación web desarrollada en PHP y MySQL para gestionar citas online.
 
----
 
 ## 🛠 Tecnologías utilizadas
 
