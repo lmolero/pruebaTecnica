@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Clinical apoinments</title>
+    </head>
+    <body>
+        <h1>Agendar Cita</h1>
+        <form id="formAppointment" action="/pruebaTecnica/ejercicio2/controllers/AppointmentsController.php" method="POST">
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" name="name" required />
+            <br />
+            <label for="name">DNI:</label>
+            <input type="text" id="dni" name="dni" required />
+            <br />
+            <label for="name">Teléfono:</label>
+            <input type="text" id="cellphone" name="cellphone" required />
+            <br />
+            <label for="name">Email:</label>
+            <input type="text" id="email" name="email" required />
+            <br />
+            <label for="appointmentType">Tipo de Cita:</label>
+            <select id="appointmentType" name="appointmentType">
+                <option value="first_consultation">Select</option>
+              <!-- Otras opciones se agregarán si el DNI es válido -->
+            </select>
+            <br />
+            <input type="submit" value="Agendar Cita" />
+    </body>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+
+        // Cuando se cambie el campo de DNI, hacemos la validación
+        $('#dni').on('input', function() {
+
+            var dni = $(this).val();
+            if (dni.length >= 8) {  // Comprobamos que el DNI tenga la longitud mínima
+            $.ajax({
+                url:'/pruebaTecnica/ejercicio2/controllers/PatientsController.php', // Script PHP que valida el DNI
+                method: 'POST',
+                data: { dni: dni },
+                dataType: 'json',
+                success: function(response) {
+                if (response.exists) {
+                    // Si el DNI existe, permitimos "REVISION"
+                    if ($('#appointmentType option[value="review"]').length === 0) {
+                        $('#appointmentType').append('<option value="review">Revisión</option>');
+                    }
+                    alert('El paciente ya existe. Puedes seleccionar "Revisión".');
+                } else {
+                    
+                    // Si el DNI no existe, solo permitimos "PRIMERA CONSULTA"
+                    $('#appointmentType').html('<option value="first_consultation">Primera Consulta</option>');
+                    alert('Paciente nuevo. Puedes seleccionar "Primera consulta" .');
+                }
+                },
+                error: function() {
+                alert('Hubo un error al verificar el DNI.');
+                }
+            });
+            }
+        });
+    });
+</script>
+
+</html>
+
+
