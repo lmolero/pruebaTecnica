@@ -1,71 +1,113 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Clinical apoinments</title>
-    </head>
-    <body>
-        <h1>Agendar Cita</h1>
-        <form id="formAppointment" action="/pruebaTecnica/ejercicio2/controllers/AppointmentsController.php" method="POST">
-            <label for="name">Nombre:</label>
-            <input type="text" id="name" name="name" required />
-            <br />
-            <label for="name">DNI:</label>
-            <input type="text" id="dni" name="dni" required />
-            <br />
-            <label for="name">Teléfono:</label>
-            <input type="text" id="cellphone" name="cellphone" required />
-            <br />
-            <label for="name">Email:</label>
-            <input type="text" id="email" name="email" required />
-            <br />
-            <label for="appointmentType">Tipo de Cita:</label>
-            <select id="appointmentType" name="appointmentType">
-                <option value="first_consultation">Select</option>
-              <!-- Otras opciones se agregarán si el DNI es válido -->
-            </select>
-            <br />
-            <input type="submit" value="Agendar Cita" />
-    </body>
 
+<head>
+    <meta charset="UTF-8" />
+    <title>Clinical apoinments</title>
+</head>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<body>
+    <h1>Agendar Cita</h1>
+    <form id="formAppointment" action="/pruebaTecnica/ejercicio2/controllers/AppointmentsController.php" method="POST">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="name" value="prueba" required />
+        <br />
+        <label for="name">DNI:</label>
+        <input type="text" id="dni" name="dni" value="12345678M" required />
+        <br />
+        <label for="name">Teléfono:</label>
+        <input type="text" id="cellphone" name="cellphone" value="611024587" required />
+        <br />
+        <label for="name">Email:</label>
+        <input type="text" id="email" name="email" value="prueba@prueba.com" required />
+        <br />
+        <label for="appointmentType">Tipo de Cita:</label>
+        <select id="appointmentType" name="appointmentType">
+            <option value="first_consultation">Select</option>
+        </select>
+        <br />
+        <input type="submit" value="Agendar Cita" />
+    </form>
+    <!-- get the response and handle with php -->
+    <?php 
+        if (isset($dataAppointmentDone) && $dataAppointmentDone['status'] === 'success') {
+            $date = htmlspecialchars($dataAppointmentDone['appointment']['date']);
+            $hour = htmlspecialchars($dataAppointmentDone['appointment']['hour']);
+
+            echo "<script>alert('Cita generada correctamente. Día: $date, Hora: $hour');</script>";
+           
+        } else {
+            // Mensaje si no se generó la cita correctamente
+            echo "<div>" . htmlspecialchars($dataAppointmentDone['message'] ?? "Por favor, completa el formulario para agendar una cita.") . "</div>";
+        }
+        ?>
+</body>
+<!-- Scripts to check data from form and validate -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
+    // validations for the form
+    $(document).ready(function () {
 
-        // Cuando se cambie el campo de DNI, hacemos la validación
-        $('#dni').on('input', function() {
+        $('#dni').on('blur', function () {
 
             var dni = $(this).val();
-            if (dni.length >= 8) {  // Comprobamos que el DNI tenga la longitud mínima
+            var dniRegex = /^\d{8}[a-zA-Z]$/;
+            if (!dniRegex.test(dni)) {
+                $(this).css('border', '2px solid red');
+                alert('DNI no válido. Debe tener 8 números y una letra (ejemplo: 12345678A).');
+            } else {
+                $(this).css('border', '2px solid blue');
+            }
+
             $.ajax({
-                url:'/pruebaTecnica/ejercicio2/controllers/PatientsController.php', // Script PHP que valida el DNI
+                url: '/pruebaTecnica/ejercicio2/controllers/PatientsController.php',
                 method: 'POST',
                 data: { dni: dni },
                 dataType: 'json',
-                success: function(response) {
-                if (response.exists) {
-                    // Si el DNI existe, permitimos "REVISION"
-                    if ($('#appointmentType option[value="review"]').length === 0) {
-                        $('#appointmentType').append('<option value="review">Revisión</option>');
+                success: function (response) {
+                    if (response.exists) {
+                        if ($('#appointmentType option[value="review"]').length === 0) {
+                            $('#appointmentType').append('<option value="review">Revisión</option>');
+                        }
+                        alert('El paciente ya existe. Puedes seleccionar "Revisión".');
+                    } else {
+                        $('#appointmentType').html('<option value="first_consultation">Primera Consulta</option>');
+                        alert('Paciente nuevo. Puedes seleccionar "Primera consulta" .');
                     }
-                    alert('El paciente ya existe. Puedes seleccionar "Revisión".');
-                } else {
-                    
-                    // Si el DNI no existe, solo permitimos "PRIMERA CONSULTA"
-                    $('#appointmentType').html('<option value="first_consultation">Primera Consulta</option>');
-                    alert('Paciente nuevo. Puedes seleccionar "Primera consulta" .');
-                }
                 },
-                error: function() {
-                alert('Hubo un error al verificar el DNI.');
+                error: function () {
+                    alert('Hubo un error al verificar el DNI.');
                 }
             });
+        });
+
+
+        //validation cellphone
+        $('#cellphone').on('blur', function () {
+            var tlf = $(this).val();
+            // just numbery and 9 digits minimum
+            if (!/^\d{9,}$/.test(tlf)) {
+                $(this).css('border', '2px solid red');
+                alert('número de teléfono no válido. Por favor, introduce un número correcto.');
+            } else {
+                $(this).css('border', '2px solid blue');
             }
         });
+
+        //validation email
+        $('#email').on('blur', function () {
+            var email = $(this).val();
+            // regex for email validation
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                $(this).css('border', '2px solid red');
+                alert('Email no válido. Por favor, introduce un email correcto.');
+            } else {
+                $(this).css('border', '2px solid blue');
+            }
+        });
+
     });
 </script>
 
 </html>
-
-

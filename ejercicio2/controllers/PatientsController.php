@@ -1,6 +1,6 @@
 <?php
 
-// Llamada al modelo
+// call the model
 require_once(__DIR__ . "/../models/Patients.php");
 
 class PatientsController{
