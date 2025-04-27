@@ -25,14 +25,15 @@ class AppointmentsController{
                 $objetPatient = $patient->getPatientByDni($dni);
                 $idPatient = $objetPatient['id'];
 
-                $newDateTime = (new DateTime())->format('Y-m-d');
+                $newDateTime = new DateTime();
                 $newDateTime = $this->checkDate($newDateTime, $laborDays);
+                $newHour = '10:00:00';
 
                 $newappointment = new Appointments();
                 $newappointment->setPatientId($idPatient);
                 $newappointment->setTypeAppointment($appointmentType);
-                $newappointment->setDateAppointment($newDateTime);
-                $newappointment->setHour('10:00:00');
+                $newappointment->setDateAppointment($newDateTime->format('Y-m-d'));
+                $newappointment->setHour('$newHour');
 
                 $responseAppointment = $newappointment->createNewAppointment();
 
@@ -51,11 +52,15 @@ class AppointmentsController{
                 $objetPatient = $patient->getPatientByDni($dni);
                 $idPatient = $objetPatient['id'];
 
+                $newDateTime = new DateTime();
+                $newDateTime = $this->checkDate($newDateTime, $laborDays);
+                $newHour = '10:00:00';
+
                 $newappointment = new Appointments();
                 $newappointment->setPatientId($idPatient);
                 $newappointment->setTypeAppointment($appointmentType);
-                $newappointment->setDateAppointment((new DateTime())->format('Y-m-d'));
-                $newappointment->setHour('10:00:00');
+                $newappointment->setDateAppointment($newDateTime->format('Y-m-d'));
+                $newappointment->setHour($newHour);
 
                 $responseAppointment = $newappointment->createNewAppointment();
 
@@ -63,15 +68,14 @@ class AppointmentsController{
             
         } else {
             // there is a last appointment, so we set the next hour
-            $lastHour = $lastAppointment['hora'];
+            $lastHour = $lastAppointment['hour_appointment'];
             $lastHourDateTime = new DateTime($lastHour);
             $lastHourDateTime->modify('+60 minutes');
             $newHour = $lastHourDateTime->format('H:i:s');
 
-            $lastDate = $lastAppointment['fecha'];
+            $lastDate = $lastAppointment['date_appointment'];
             $newDateTime = new DateTime($lastDate);
-
-
+  
             if ($newHour > $limitHour) {
                 $newHour = '10:00:00';
                 $newDateTime = $this->checkDate($newDateTime, $laborDays);

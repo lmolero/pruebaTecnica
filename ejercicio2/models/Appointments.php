@@ -59,7 +59,8 @@ class Appointments{
     public function createNewAppointment(){
 
         try {
-            $sql = "INSERT INTO appointments (patient_id, fecha, hora, tipo_cita) VALUES (?, ?, ?, ?)";
+
+            $sql = "INSERT INTO appointments (patient_id, date_appointment, hour_appointment, type_appointment) VALUES (?, ?, ?, ?)";
             $stmt = $this->conexionBBDD->prepare($sql);
             $stmt->bind_param("isss", $this->patientId, $this->dateAppointment, $this->hour, $this->typeAppointment);
             $stmt->execute();

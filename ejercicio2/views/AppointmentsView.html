@@ -23,7 +23,7 @@
         <br />
         <label for="appointmentType">Tipo de Cita:</label>
         <select id="appointmentType" name="appointmentType">
-            <option value="first_consultation">Select</option>
+            <option value="Primera Consulta">Select</option>
         </select>
         <br />
         <input type="submit" value="Agendar Cita" />
@@ -66,12 +66,12 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.exists) {
-                        if ($('#appointmentType option[value="review"]').length === 0) {
-                            $('#appointmentType').append('<option value="review">Revisión</option>');
+                        if ($('#appointmentType option[value="Revisión"]').length === 0) {
+                            $('#appointmentType').append('<option value="Revisión">Revisión</option>');
                         }
                         alert('El paciente ya existe. Puedes seleccionar "Revisión".');
                     } else {
-                        $('#appointmentType').html('<option value="first_consultation">Primera Consulta</option>');
+                        $('#appointmentType').html('<option value="Primera Consulta">Primera Consulta</option>');
                         alert('Paciente nuevo. Puedes seleccionar "Primera consulta" .');
                     }
                 },

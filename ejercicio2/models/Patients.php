@@ -79,7 +79,7 @@ class Patients{
 
     public function createNewPatient(){
         try {
-            $sql = "INSERT INTO patients (dni, nombre, telefono, email) VALUES ('".$this->dni."', '".$this->name."' , '".$this->cellphone."' , '".$this->email."');";
+            $sql = "INSERT INTO patients (dni, name_patient, cellphone, email) VALUES ('".$this->dni."', '".$this->name."' , '".$this->cellphone."' , '".$this->email."');";
 
             $stmt = $this->conexionBBDD->query($sql);
 
